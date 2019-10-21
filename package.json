@@ -1,0 +1,28 @@
+{
+  "name": "epstein",
+  "version": "0.1.0",
+  "description": "Fast in-memory search engine written in Javascript",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "jest",
+    "dist": "rollup -c rollup.config.js --compact"
+  },
+  "keywords": [
+    "search",
+    "javascript",
+    "es6",
+    "search-engine"
+  ],
+  "author": "alexhoma <alexcm.14@gmail.com>",
+  "license": "GPL-3.0-or-later",
+  "devDependencies": {
+    "@babel/core": "^7.6.4",
+    "@babel/preset-env": "^7.6.3",
+    "babel-eslint": "^10.0.3",
+    "babel-jest": "^24.9.0",
+    "eslint": "^6.5.1",
+    "eslint-config-airbnb": "^18.0.1",
+    "jest": "^24.9.0",
+    "rollup": "^1.25.1"
+  }
+}
