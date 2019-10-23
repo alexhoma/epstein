@@ -1,7 +1,37 @@
+// Index example
+// {
+//   // token
+//   leviathan: {
+//     // document-id: [token-position]
+//     0: [0]
+//   },
+//   awakes: {
+//     0: [1]
+//   },
+// }
+
 function epstein(documents) {
+  let index = {};
+
+  documents.forEach(function(doc, documentId) {
+    Object.entries(doc).forEach(function([, fieldContent]) {
+      const tokens = fieldContent.split(' ');
+
+      tokens.forEach(function(token, position) {
+        token = token.toLowerCase();
+        index = {
+          ...index,
+          [token]: {
+            [documentId]: [position],
+          },
+        };
+      });
+    });
+  });
+
   return {
-    search(query) {
-      return documents.filter(doc => doc === query);
+    getIndex() {
+      return index;
     },
   };
 }
