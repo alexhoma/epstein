@@ -58,24 +58,37 @@ describe('indexing', () => {
     });
   });
 
-  test.skip('acceptance', () => {
+  test('acceptance', () => {
     const docs = [
-      { title: 'Leviathan Awakes', author: 'James Corey' },
-      { title: 'Calibans War', author: 'James Corey' },
-      { title: 'Abaddons Gate', author: 'James Corey' },
+      {
+        title: 'Leviathan Awakes',
+        author: 'James Corey',
+      },
+      {
+        title: 'Calibans War',
+        author: 'James Corey',
+      },
+      {
+        title: 'Abaddons Gate',
+        author: 'James Corey',
+      },
+      {
+        title: 'Leviathan War War',
+        author: 'Corey James James',
+      },
     ];
 
     const index = epstein(docs).getIndex();
 
     expect(index).toEqual({
-      leviathan: { 0: [0] },
+      leviathan: { 0: [0], 3: [0] },
       awakes: { 0: [1] },
       calibans: { 1: [0] },
-      war: { 1: [1] },
+      war: { 1: [1], 3: [1, 2] },
       abaddons: { 2: [0] },
       gate: { 2: [1] },
-      james: { 0: [0], 1: [0], 2: [0] },
-      corey: { 0: [0], 1: [0], 2: [0] },
+      james: { 0: [0], 1: [0], 2: [0], 3: [1, 2] },
+      corey: { 0: [1], 1: [1], 2: [1], 3: [0] },
     });
   });
 });

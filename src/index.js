@@ -10,16 +10,14 @@
 //   },
 // }
 
-function epstein(documents) {
+function createIndex(documents) {
   let index = {};
 
   documents.forEach(function(doc, documentId) {
     Object.entries(doc).forEach(function([, fieldContent]) {
       const tokens = fieldContent.split(' ');
-
       tokens.forEach(function(token, position) {
         token = token.toLowerCase();
-
         if (!index[token] || !index[token][documentId]) {
           index = {
             ...index,
@@ -30,7 +28,6 @@ function epstein(documents) {
           };
           return;
         }
-
         index = {
           ...index,
           [token]: {
@@ -41,6 +38,12 @@ function epstein(documents) {
       });
     });
   });
+
+  return index;
+}
+
+function epstein(documents) {
+  const index = createIndex(documents);
 
   return {
     getIndex() {
