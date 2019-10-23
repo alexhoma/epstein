@@ -10,7 +10,7 @@ describe('indexing', () => {
     expect(index.awakes).toBeDefined();
   });
 
-  test('should tokenize an object with only one attribute', () => {
+  test('should tokenize a simple object', () => {
     const docs = [{ title: 'Leviathan Awakes' }];
 
     const index = epstein(docs).getIndex();
@@ -18,6 +18,43 @@ describe('indexing', () => {
     expect(index).toEqual({
       leviathan: { 0: [0] },
       awakes: { 0: [1] },
+    });
+  });
+
+  test('should tokenize simple object with repeated tokens', () => {
+    const docs = [
+      { title: 'Leviathan Awakes Leviathan Awakes Awakes Leviathan' },
+    ];
+
+    const index = epstein(docs).getIndex();
+
+    expect(index).toEqual({
+      leviathan: { 0: [0, 2, 5] },
+      awakes: { 0: [1, 3, 4] },
+    });
+  });
+
+  test('should tokenize many simple objects', () => {
+    const docs = [{ title: 'Leviathan Awakes' }, { title: 'Calibans War' }];
+
+    const index = epstein(docs).getIndex();
+
+    expect(index).toEqual({
+      leviathan: { 0: [0] },
+      awakes: { 0: [1] },
+      calibans: { 1: [0] },
+      war: { 1: [1] },
+    });
+  });
+
+  test('should tokenize many simple objects with shared tokens', () => {
+    const docs = [{ title: 'Leviathan Awakes' }, { title: 'Awakes Leviathan' }];
+
+    const index = epstein(docs).getIndex();
+
+    expect(index).toEqual({
+      leviathan: { 0: [0], 1: [1] },
+      awakes: { 0: [1], 1: [0] },
     });
   });
 

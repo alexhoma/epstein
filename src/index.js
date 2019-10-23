@@ -19,10 +19,23 @@ function epstein(documents) {
 
       tokens.forEach(function(token, position) {
         token = token.toLowerCase();
+
+        if (!index[token] || !index[token][documentId]) {
+          index = {
+            ...index,
+            [token]: {
+              ...index[token],
+              [documentId]: [position],
+            },
+          };
+          return;
+        }
+
         index = {
           ...index,
           [token]: {
-            [documentId]: [position],
+            ...index[token],
+            [documentId]: [...index[token][documentId], position],
           },
         };
       });
