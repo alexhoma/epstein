@@ -1,6 +1,15 @@
 import epstein from '.';
 
 describe('indexing', () => {
+  test('should lowercase all tokens', () => {
+    const docs = [{ title: 'LeviAThaN AwakeS' }];
+
+    const index = epstein(docs).getIndex();
+
+    expect(index.leviathan).toBeDefined();
+    expect(index.awakes).toBeDefined();
+  });
+
   test('should tokenize an object with only one attribute', () => {
     const docs = [{ title: 'Leviathan Awakes' }];
 
