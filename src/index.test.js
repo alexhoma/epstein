@@ -10,6 +10,22 @@ describe('indexing', () => {
     expect(index.awakes).toBeDefined();
   });
 
+  test('should trim all tokens', () => {
+    const docs = [{ title: 'leviathan     ' }];
+
+    const index = epstein(docs).getIndex();
+
+    expect(index['']).not.toBeDefined();
+  });
+
+  test('should remove more than one empty space between tokens', () => {
+    const docs = [{ title: 'leviathan     awakes' }];
+
+    const index = epstein(docs).getIndex();
+
+    expect(index['']).not.toBeDefined();
+  });
+
   test('should tokenize a simple object', () => {
     const docs = [{ title: 'Leviathan Awakes' }];
 

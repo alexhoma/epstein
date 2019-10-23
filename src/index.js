@@ -1,23 +1,29 @@
-// Index example
-// {
-//   // token
-//   leviathan: {
-//     // document-id: [token-position]
-//     0: [0]
-//   },
-//   awakes: {
-//     0: [1]
-//   },
-// }
-
 function createIndex(documents) {
-  let index = {};
+  // return the same object but with its property values
+  // already sanitized and tokenized
+  const tokenizedDocuments = documents.map(function tokenize(doc) {
+    return Object.entries(doc).reduce(function(
+      accumulatedTokenizedDocument,
+      [key, value],
+    ) {
+      const tokenizedValue = value
+        .replace(/ +/g, ' ')
+        .trim()
+        .split(' ')
+        .map(token => token.toLowerCase());
 
-  documents.forEach(function(doc, documentId) {
-    Object.entries(doc).forEach(function([, fieldContent]) {
-      const tokens = fieldContent.split(' ');
+      return {
+        ...accumulatedTokenizedDocument,
+        [key]: tokenizedValue,
+      };
+    },
+    {});
+  });
+
+  // create a Term Frquency index
+  return tokenizedDocuments.reduce(function(index, doc, documentId) {
+    Object.entries(doc).forEach(function([, tokens]) {
       tokens.forEach(function(token, position) {
-        token = token.toLowerCase();
         if (!index[token] || !index[token][documentId]) {
           index = {
             ...index,
@@ -26,8 +32,10 @@ function createIndex(documents) {
               [documentId]: [position],
             },
           };
+
           return;
         }
+
         index = {
           ...index,
           [token]: {
@@ -37,12 +45,12 @@ function createIndex(documents) {
         };
       });
     });
-  });
 
-  return index;
+    return index;
+  }, {});
 }
 
-function epstein(documents) {
+export default function epstein(documents) {
   const index = createIndex(documents);
 
   return {
@@ -51,5 +59,3 @@ function epstein(documents) {
     },
   };
 }
-
-export default epstein;
