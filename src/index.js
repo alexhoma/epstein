@@ -9,8 +9,8 @@ function createIndex(documents) {
       const tokenizedValue = value
         .replace(/ +/g, ' ')
         .trim()
-        .split(' ')
-        .map(token => token.toLowerCase());
+        .toLowerCase()
+        .split(' ');
 
       return {
         ...accumulatedTokenizedDocument,
@@ -20,8 +20,11 @@ function createIndex(documents) {
     {});
   });
 
-  // create a Term Frquency index
-  return tokenizedDocuments.reduce(function(index, doc, documentId) {
+  return tokenizedDocuments.reduce(function createInvertedIndex(
+    index,
+    doc,
+    documentId,
+  ) {
     Object.entries(doc).forEach(function([, tokens]) {
       tokens.forEach(function(token, position) {
         if (!index[token] || !index[token][documentId]) {
@@ -47,7 +50,8 @@ function createIndex(documents) {
     });
 
     return index;
-  }, {});
+  },
+  {});
 }
 
 export default function epstein(documents) {
