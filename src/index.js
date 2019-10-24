@@ -62,12 +62,20 @@ export default function epstein(documents) {
       return index;
     },
     search(query) {
-      const term = index[query];
-      if (!term) {
-        return [];
-      }
+      const terms = query.split(' ');
 
-      return Object.keys(term).map(documentId => documents[documentId]);
+      const documentIds = terms.reduce(function findDocumentIds(acc, term) {
+        const matches = index[term] && Object.keys(index[term]);
+        if (!matches) {
+          return acc;
+        }
+
+        const documentIds = matches.filter(match => !acc.includes(match));
+
+        return acc.concat(documentIds);
+      }, []);
+
+      return documentIds.map(documentId => documents[documentId]);
     },
   };
 }

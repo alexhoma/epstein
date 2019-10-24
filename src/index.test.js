@@ -152,6 +152,36 @@ describe('search', () => {
     ]);
   });
 
+  test('should return a list of many matching results when searching by many exact words', () => {
+    expect(index.search('gate awakes')).toEqual([
+      {
+        title: 'Abaddons Gate',
+        author: 'James Corey',
+      },
+      {
+        title: 'Leviathan Awakes',
+        author: 'James Corey',
+      },
+    ]);
+  });
+
+  test('should return the same list of results even when there are many matchings of the same word', () => {
+    expect(index.search('leviathan war')).toEqual([
+      {
+        title: 'Leviathan Awakes',
+        author: 'James Corey',
+      },
+      {
+        title: 'Leviathan War War',
+        author: 'Corey James James',
+      },
+      {
+        title: 'Calibans War',
+        author: 'James Corey',
+      },
+    ]);
+  });
+
   test('should return an empty list when there isnt any match', () => {
     expect(index.search('beratna')).toEqual([]);
   });
