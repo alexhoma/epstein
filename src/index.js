@@ -61,5 +61,10 @@ export default function epstein(documents) {
     getIndex() {
       return index;
     },
+    search(query) {
+      const term = index[query];
+
+      return Object.keys(term).map(documentId => documents[documentId]);
+    },
   };
 }

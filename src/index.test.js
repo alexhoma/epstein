@@ -108,3 +108,47 @@ describe('indexing', () => {
     });
   });
 });
+
+describe('search', () => {
+  const docs = [
+    {
+      title: 'Leviathan Awakes',
+      author: 'James Corey',
+    },
+    {
+      title: 'Calibans War',
+      author: 'James Corey',
+    },
+    {
+      title: 'Abaddons Gate',
+      author: 'James Corey',
+    },
+    {
+      title: 'Leviathan War War',
+      author: 'Corey James James',
+    },
+  ];
+  const index = epstein(docs);
+
+  test('should return a list of one matching result when searching by one exact word', () => {
+    expect(index.search('gate')).toEqual([
+      {
+        title: 'Abaddons Gate',
+        author: 'James Corey',
+      },
+    ]);
+  });
+
+  test.skip('acceptance', () => {
+    expect(index.search('leviath')).toEqual([
+      {
+        title: 'Leviathan Awakes',
+        author: 'James Corey',
+      },
+      {
+        title: 'Leviathan War War',
+        author: 'Corey James James',
+      },
+    ]);
+  });
+});
