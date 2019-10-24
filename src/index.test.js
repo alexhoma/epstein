@@ -152,6 +152,10 @@ describe('search', () => {
     ]);
   });
 
+  test('should return an empty list when there isnt any match', () => {
+    expect(index.search('beratna')).toEqual([]);
+  });
+
   test.skip('acceptance', () => {
     expect(index.search('leviath')).toEqual([
       {
