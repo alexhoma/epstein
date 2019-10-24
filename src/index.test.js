@@ -130,6 +130,15 @@ describe('search', () => {
   ];
   const index = epstein(docs);
 
+  test('should return a all documents when search argument is a falsy value', () => {
+    expect(index.search()).toEqual(docs);
+    expect(index.search(0)).toEqual(docs);
+    expect(index.search('')).toEqual(docs);
+    expect(index.search(null)).toEqual(docs);
+    expect(index.search(false)).toEqual(docs);
+    expect(index.search(undefined)).toEqual(docs);
+  });
+
   test('should return a list of one matching result when searching by one exact word', () => {
     expect(index.search('gate')).toEqual([
       {
