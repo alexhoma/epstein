@@ -139,6 +139,19 @@ describe('search', () => {
     ]);
   });
 
+  test('should return a list of many matching results when searching by one exact word', () => {
+    expect(index.search('war')).toEqual([
+      {
+        title: 'Calibans War',
+        author: 'James Corey',
+      },
+      {
+        title: 'Leviathan War War',
+        author: 'Corey James James',
+      },
+    ]);
+  });
+
   test.skip('acceptance', () => {
     expect(index.search('leviath')).toEqual([
       {
