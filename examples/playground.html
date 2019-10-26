@@ -5,8 +5,13 @@
     <script type="text/javascript" src="../dist/epstein.umd.js"></script>
   </head>
   <body>
+    <input id="search" type="search"/>
+    <div id="results">No results</div>
+
     <script type="text/javascript">
-      var documents = [
+      var searchInput = document.querySelector('#search');
+      var resultsContainer = document.querySelector('#results');
+      var books = [
         {
           title: 'Leviathan Awakes',
           author: 'James Corey'
@@ -21,6 +26,18 @@
           author: 'Corey James James'
         }
       ];
+
+      var booksIndex = epstein(books);
+      searchInput.addEventListener('change', function onUserSearch(e) {
+        var results = booksIndex.search(e.target.value);
+        resultsContainer.innerHTML = '';
+
+        results.map(function renderResults(result) {
+          var div = document.createElement("DIV");
+          div.innerHTML = `${result.title} - ${result.author}`;
+          resultsContainer.appendChild(div);
+        });
+      })
     </script>
   </body>
 </html>
