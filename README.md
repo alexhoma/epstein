@@ -1,6 +1,8 @@
 # Epstein
 
-In memory search engine written in javascript.
+In-memory search engine written in javascript.
+
+> The story tells that the **Epstein Drive** is a modified fusion drive invented by Solomon Epstein around 130 years BXT (Before Extrasolar Technology) and it enabled humanity to travel beyond Earth and colonize the Inner Planets, the Asteroid Belt and outer planets due to its efficiency and power. "The Expanse"
 
 ## Setup
 
@@ -20,12 +22,8 @@ const docs = [
 ];
 
 const index = epstein(documents);
-const result = index.search('Cal');
-
-console.log(result);
-// [
-//   { title: 'Calibans War', number: 2 },
-// ]
+index.search('Cal');
+// [ { title: 'Calibans War', number: 2 } ]
 ```
 
 ## Tests:
