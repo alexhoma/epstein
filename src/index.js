@@ -1,16 +1,38 @@
+const wordsToRemove = [
+  'a',
+  'as',
+  'at',
+  'an',
+  'by',
+  'be',
+  'for',
+  'of',
+  'or',
+  'to',
+  'the',
+  'that',
+  'than',
+  'is',
+  'it',
+  'its',
+];
+
 function createIndex(documents) {
   // return the same object but with its property values
   // already sanitized and tokenized
-  const tokenizedDocuments = documents.map(function tokenize(doc) {
+  const analyzedDocuments = documents.map(function analyze(doc) {
     return Object.entries(doc).reduce(function(
       accumulatedTokenizedDocument,
       [key, value],
     ) {
+      value = value.replace(/ +/g, ' ').trim();
+      value = value.toLowerCase();
+
       const tokenizedValue = value
-        .replace(/ +/g, ' ')
-        .trim()
-        .toLowerCase()
-        .split(' ');
+        .split(' ')
+        .filter(function removeCommonWords(value) {
+          return !wordsToRemove.includes(value) && value;
+        });
 
       return {
         ...accumulatedTokenizedDocument,
@@ -20,7 +42,7 @@ function createIndex(documents) {
     {});
   });
 
-  return tokenizedDocuments.reduce(function createInvertedIndex(
+  return analyzedDocuments.reduce(function createInvertedIndex(
     index,
     doc,
     documentId,

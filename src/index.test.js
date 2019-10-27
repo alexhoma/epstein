@@ -26,6 +26,15 @@ describe('indexing', () => {
     expect(index['']).not.toBeDefined();
   });
 
+  test('should remove common language tokens', () => {
+    const docs = [{ title: 'the leviathan is awake' }];
+
+    const index = epstein(docs).getIndex();
+
+    expect(index['the']).not.toBeDefined();
+    expect(index['is']).not.toBeDefined();
+  });
+
   test('should tokenize a simple object', () => {
     const docs = [{ title: 'Leviathan Awakes' }];
 
