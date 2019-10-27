@@ -157,6 +157,15 @@ describe('search', () => {
     ]);
   });
 
+  test('should be case insensitive', () => {
+    expect(index.search('Abaddons')).toEqual([
+      {
+        title: 'Abaddons Gate',
+        author: 'James Corey',
+      },
+    ]);
+  });
+
   test('should return a list of many matching results when searching by one exact word', () => {
     expect(index.search('war')).toEqual([
       {

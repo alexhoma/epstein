@@ -88,7 +88,7 @@ export default function epstein(documents) {
         return documents;
       }
 
-      const terms = query.split(' ');
+      const terms = query.toLowerCase().split(' ');
 
       const documentIds = terms.reduce(function findDocumentIds(acc, term) {
         const matches = index[term] && Object.keys(index[term]);
