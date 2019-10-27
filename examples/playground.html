@@ -9,14 +9,19 @@
   <body>
     <main>
       <h1>Search a book</h1>
+      <span>
+        <b>Index time:</b>
+        <span id="index-time"></span></span>
       <input id="search" type="search"/>
       <section>
         <div>
           <h2>Esptein results</h2>
+          <span id="epstein-performance-time"></span>
           <div id="epstein-results">No results</div>
         </div>
         <div>
           <h2>Raw results</h2>
+          <span id="raw-performance-time"></span>
           <div id="raw-results">No results</div>
         </div>
       </section>
@@ -26,6 +31,22 @@
       var books = books.map(function transformBooks(book) {
         return {title: book.title, author: book.author, content: book.content};
       });
+      function renderPerformance(target, callback) {
+        var start = window
+          .performance
+          .now();
+        var callbackResult = callback();
+        var end = window
+          .performance
+          .now();
+
+        var time = end - start;
+        document
+          .querySelector(`#${target}`)
+          .innerHTML = `${time}ms`;
+
+        return callbackResult;
+      }
       function renderResults(target, results) {
         var resultsContainer = document.querySelector(`#${target}`);
         resultsContainer.innerHTML = '';
@@ -38,17 +59,13 @@
       }
 
       // create books index
-      console.time('indexing');
-      var booksIndex = epstein(books);
-      console.timeEnd('indexing');
+      var booksIndex = renderPerformance('index-time', () => epstein(books))
 
       // Search with Epstein
       document
         .querySelector('#search')
         .addEventListener('change', function onUserSearch(e) {
-          console.time('epstein:search');
-          var results = booksIndex.search(e.target.value);
-          console.timeEnd('epstein:search');
+          var results = renderPerformance('epstein-performance-time', () => booksIndex.search(e.target.value))
 
           renderResults('epstein-results', results);
         })
@@ -57,28 +74,28 @@
       document
         .querySelector('#search')
         .addEventListener('change', function onUserSearch(e) {
-          console.time('raw:search');
-          const queryParam = e
-            .target
-            .value
-            .toLowerCase();
-          const results = books.filter(function (book) {
-            const found = Object
-              .entries(book)
-              .some(([, prop]) => {
-                return prop
-                  .toLowerCase()
-                  .search(queryParam) !== -1
-              });
+          var results = renderPerformance('raw-performance-time', () => {
+            var queryParam = e
+              .target
+              .value
+              .toLowerCase();
 
-            if (!found) {
-              return;
-            }
+            return books.filter(function (book) {
+              var found = Object
+                .entries(book)
+                .some(([, prop]) => {
+                  return prop
+                    .toLowerCase()
+                    .search(queryParam) !== -1
+                });
 
-            return book;
-          })
-          var con = console.timeEnd('raw:search');
-          console.log('CON', con)
+              if (!found) {
+                return;
+              }
+
+              return book;
+            });
+          });
 
           renderResults('raw-results', results);
         })
