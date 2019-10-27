@@ -4,26 +4,30 @@
     <title>Epstein playground</title>
     <script type="text/javascript" src="./books.js"></script>
     <script type="text/javascript" src="../dist/epstein.umd.js"></script>
+    <link rel="stylesheet" href="./styles.css"/>
   </head>
   <body>
-    <input id="search" type="search"/>
-    <div id="results">No results</div>
+    <main>
+      <h1>Search a book</h1>
+      <input id="search" type="search"/>
+      <section>
+        <div>
+          <h2>Esptein results</h2>
+          <div id="epstein-results">No results</div>
+        </div>
+        <div>
+          <h2>Raw results</h2>
+          <div id="raw-results">No results</div>
+        </div>
+      </section>
+    </main>
 
     <script type="text/javascript">
-      var searchInput = document.querySelector('#search');
-      var resultsContainer = document.querySelector('#results');
       var books = books.map(function transformBooks(book) {
         return {title: book.title, author: book.author, content: book.content};
       });
-
-      // create books index
-      console.time('indexing');
-      var booksIndex = epstein(books);
-      console.timeEnd('indexing');
-
-      // on input change, go search!
-      searchInput.addEventListener('change', function onUserSearch(e) {
-        var results = booksIndex.search(e.target.value);
+      function renderResults(target, results) {
+        var resultsContainer = document.querySelector(`#${target}`);
         resultsContainer.innerHTML = '';
 
         results.map(function renderResults(result) {
@@ -31,7 +35,53 @@
           div.innerHTML = `${result.title} - ${result.author}`;
           resultsContainer.appendChild(div);
         });
-      })
+      }
+
+      // create books index
+      console.time('indexing');
+      var booksIndex = epstein(books);
+      console.timeEnd('indexing');
+
+      // Search with Epstein
+      document
+        .querySelector('#search')
+        .addEventListener('change', function onUserSearch(e) {
+          console.time('epstein:search');
+          var results = booksIndex.search(e.target.value);
+          console.timeEnd('epstein:search');
+
+          renderResults('epstein-results', results);
+        })
+
+      // Search without Epstein
+      document
+        .querySelector('#search')
+        .addEventListener('change', function onUserSearch(e) {
+          console.time('raw:search');
+          const queryParam = e
+            .target
+            .value
+            .toLowerCase();
+          const results = books.filter(function (book) {
+            const found = Object
+              .entries(book)
+              .some(([, prop]) => {
+                return prop
+                  .toLowerCase()
+                  .search(queryParam) !== -1
+              });
+
+            if (!found) {
+              return;
+            }
+
+            return book;
+          })
+          var con = console.timeEnd('raw:search');
+          console.log('CON', con)
+
+          renderResults('raw-results', results);
+        })
     </script>
   </body>
 </html>
