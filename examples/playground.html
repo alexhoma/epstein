@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <title>Epstein playground</title>
+    <script type="text/javascript" src="./books.js"></script>
     <script type="text/javascript" src="../dist/epstein.umd.js"></script>
   </head>
   <body>
@@ -11,23 +12,16 @@
     <script type="text/javascript">
       var searchInput = document.querySelector('#search');
       var resultsContainer = document.querySelector('#results');
-      var books = [
-        {
-          title: 'Leviathan Awakes',
-          author: 'James Corey'
-        }, {
-          title: 'Calibans War',
-          author: 'James Corey'
-        }, {
-          title: 'Abaddons Gate',
-          author: 'James Corey'
-        }, {
-          title: 'Leviathan War War',
-          author: 'Corey James James'
-        }
-      ];
+      var books = books.map(function transformBooks(book) {
+        return {title: book.title, author: book.author, content: book.content};
+      });
 
+      // create books index
+      console.time('indexing');
       var booksIndex = epstein(books);
+      console.timeEnd('indexing');
+
+      // on input change, go search!
       searchInput.addEventListener('change', function onUserSearch(e) {
         var results = booksIndex.search(e.target.value);
         resultsContainer.innerHTML = '';
