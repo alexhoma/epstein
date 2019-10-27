@@ -64,7 +64,7 @@
       // Search with Epstein
       document
         .querySelector('#search')
-        .addEventListener('change', function onUserSearch(e) {
+        .addEventListener('input', function onUserSearch(e) {
           var results = renderPerformance('epstein-performance-time', () => booksIndex.search(e.target.value))
 
           renderResults('epstein-results', results);
@@ -73,7 +73,7 @@
       // Search without Epstein
       document
         .querySelector('#search')
-        .addEventListener('change', function onUserSearch(e) {
+        .addEventListener('input', function onUserSearch(e) {
           var results = renderPerformance('raw-performance-time', () => {
             var queryParam = e
               .target
