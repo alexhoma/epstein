@@ -49,14 +49,30 @@ describe('index', () => {
     });
   });
 
-  test('should not have an empty token', () => {
-    const docs = [
-      { title: '   leviathan', author: 'james   ' },
-      { title: 'calibans   war', author: '   corey' },
-    ];
+  test('should have all tokens in lowercase', () => {
+    const docs = [{ title: 'LeviAThaN AwakeS' }];
 
     const index = epstein(docs).getIndex();
 
+    expect(index.leviathan).toBeDefined();
+    expect(index.awakes).toBeDefined();
+  });
+
+  test('should not have an empty token', () => {
+    const docs = [{ title: '   leviathan  awakes  ' }];
+
+    const index = epstein(docs).getIndex();
+
+    expect(index['']).not.toBeDefined();
+  });
+
+  test('should not have any stopword (case inensitive)', () => {
+    const docs = [{ title: 'The leviathan is awake' }];
+
+    const index = epstein(docs).getIndex();
+
+    expect(index['the']).not.toBeDefined();
+    expect(index['is']).not.toBeDefined();
     expect(index['']).not.toBeDefined();
   });
 

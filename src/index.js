@@ -70,7 +70,11 @@ export default function epstein(documents) {
         return documents;
       }
 
-      const terms = query.toLowerCase().split(' ');
+      function analyzeQuery(q, analyzers) {
+        return analyzers.reduce((value, analyzer) => analyzer(value), q);
+      }
+
+      const terms = analyzeQuery(query, [filterEmptySpaces, tokenize]);
 
       const documentIds = terms.reduce(function findDocumentIds(acc, term) {
         const matches = index[term] && Object.keys(index[term]);
