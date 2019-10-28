@@ -4,6 +4,8 @@
     <title>Epstein playground</title>
     <script type="text/javascript" src="./books.js"></script>
     <script type="text/javascript" src="../dist/epstein.umd.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.4.5/fuse.min.js"></script>
+
     <link rel="stylesheet" href="./styles.css"/>
   </head>
   <body>
@@ -11,13 +13,20 @@
       <h1>Search a book</h1>
       <span>
         <b>Index time:</b>
-        <span id="index-time"></span></span>
+        <span id="index-time"></span>
+      </span>
       <input id="search" type="search"/>
+      <hr/>
       <section>
         <div>
           <h2>Esptein results</h2>
           <span id="epstein-performance-time"></span>
           <div id="epstein-results">No results</div>
+        </div>
+        <div>
+          <h2>Fuse.js results</h2>
+          <span id="fuse-performance-time"></span>
+          <div id="fuse-results">No results</div>
         </div>
         <div>
           <h2>Raw results</h2>
@@ -58,16 +67,26 @@
         });
       }
 
-      // create books index
-      var booksIndex = renderPerformance('index-time', () => epstein(books))
-
       // Search with Epstein
+      var booksIndex = renderPerformance('index-time', () => epstein(books))
       document
         .querySelector('#search')
         .addEventListener('input', function onUserSearch(e) {
           var results = renderPerformance('epstein-performance-time', () => booksIndex.search(e.target.value))
 
           renderResults('epstein-results', results);
+        })
+
+      // Search with Fuse.js
+      var fuse = new Fuse(books, {
+        keys: ['title', 'author', 'content']
+      });
+      document
+        .querySelector('#search')
+        .addEventListener('input', function onUserSearch(e) {
+          var results = renderPerformance('fuse-performance-time', () => fuse.search(e.target.value))
+
+          renderResults('fuse-results', results);
         })
 
       // Search without Epstein
