@@ -142,80 +142,106 @@ describe('search', () => {
   });
 
   test('should return a list of one matching result when searching by one exact word', () => {
+    const docs = [{ title: 'Abaddons Gate', author: 'James Corey' }];
+
+    const index = epstein(docs);
+
     expect(index.search('gate')).toEqual([
-      {
-        title: 'Abaddons Gate',
-        author: 'James Corey',
-      },
+      { title: 'Abaddons Gate', author: 'James Corey' },
     ]);
   });
 
   test('should be case insensitive', () => {
+    const docs = [{ title: 'Abaddons Gate', author: 'James Corey' }];
+
+    const index = epstein(docs);
+
     expect(index.search('Abaddons')).toEqual([
-      {
-        title: 'Abaddons Gate',
-        author: 'James Corey',
-      },
+      { title: 'Abaddons Gate', author: 'James Corey' },
+    ]);
+  });
+
+  test('should not search by stopwords', () => {
+    const docs = [
+      { title: 'The Abaddons is a Gate', author: 'A James Corey' },
+      { title: 'Calibans War', author: 'James Corey' },
+    ];
+
+    const index = epstein(docs);
+
+    expect(index.search('the calibans is a war')).toEqual([
+      { title: 'Calibans War', author: 'James Corey' },
     ]);
   });
 
   test('should return a list of many matching results when searching by one exact word', () => {
+    const docs = [
+      { title: 'Leviathan Awakes', author: 'James Corey' },
+      { title: 'Calibans War', author: 'James Corey' },
+      { title: 'Leviathan War', author: 'Corey James' },
+    ];
+
+    const index = epstein(docs);
+
     expect(index.search('war')).toEqual([
-      {
-        title: 'Calibans War',
-        author: 'James Corey',
-      },
-      {
-        title: 'Leviathan War War',
-        author: 'Corey James James',
-      },
+      { title: 'Calibans War', author: 'James Corey' },
+      { title: 'Leviathan War', author: 'Corey James' },
     ]);
   });
 
   test('should return a list of many matching results when searching by many exact words', () => {
+    const docs = [
+      { title: 'Leviathan Awakes', author: 'James Corey' },
+      { title: 'Calibans War', author: 'James Corey' },
+      { title: 'Abaddons Gate', author: 'James Corey' },
+    ];
+
+    const index = epstein(docs);
+
     expect(index.search('gate awakes')).toEqual([
-      {
-        title: 'Abaddons Gate',
-        author: 'James Corey',
-      },
-      {
-        title: 'Leviathan Awakes',
-        author: 'James Corey',
-      },
+      { title: 'Abaddons Gate', author: 'James Corey' },
+      { title: 'Leviathan Awakes', author: 'James Corey' },
     ]);
   });
 
   test('should return the same list of results even when there are many matchings of the same word', () => {
+    const docs = [
+      { title: 'Leviathan Awakes', author: 'James Corey' },
+      { title: 'Calibans War', author: 'James Corey' },
+      { title: 'Abaddons Gate', author: 'James Corey' },
+      { title: 'Leviathan War War', author: 'Corey James James' },
+    ];
+
+    const index = epstein(docs);
+
     expect(index.search('leviathan war')).toEqual([
-      {
-        title: 'Leviathan Awakes',
-        author: 'James Corey',
-      },
-      {
-        title: 'Leviathan War War',
-        author: 'Corey James James',
-      },
-      {
-        title: 'Calibans War',
-        author: 'James Corey',
-      },
+      { title: 'Leviathan Awakes', author: 'James Corey' },
+      { title: 'Leviathan War War', author: 'Corey James James' },
+      { title: 'Calibans War', author: 'James Corey' },
     ]);
   });
 
   test('should return an empty list when there isnt any match', () => {
+    const docs = [{ title: 'Leviathan Awakes', author: 'James Corey' }];
+
+    const index = epstein(docs);
+
     expect(index.search('beratna')).toEqual([]);
   });
 
   test.skip('acceptance', () => {
+    const docs = [
+      { title: 'Leviathan Awakes', author: 'James Corey' },
+      { title: 'Calibans War', author: 'James Corey' },
+      { title: 'Abaddons Gate', author: 'James Corey' },
+      { title: 'Leviathan War War', author: 'Corey James James' },
+    ];
+
+    const index = epstein(docs);
+
     expect(index.search('leviath')).toEqual([
-      {
-        title: 'Leviathan Awakes',
-        author: 'James Corey',
-      },
-      {
-        title: 'Leviathan War War',
-        author: 'Corey James James',
-      },
+      { title: 'Leviathan Awakes', author: 'James Corey' },
+      { title: 'Leviathan War War', author: 'Corey James James' },
     ]);
   });
 });
