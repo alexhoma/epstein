@@ -18,7 +18,7 @@ describe('indexing', () => {
     expect(index['']).not.toBeDefined();
   });
 
-  test('should remove more than one empty space between tokens', () => {
+  test('should filter more than one empty space between tokens', () => {
     const docs = [{ title: 'leviathan     awakes' }];
 
     const index = epstein(docs).getIndex();
@@ -26,13 +26,14 @@ describe('indexing', () => {
     expect(index['']).not.toBeDefined();
   });
 
-  test('should remove common language tokens', () => {
-    const docs = [{ title: 'the leviathan is awake' }];
+  test('should filter stopwords (case inensitive)', () => {
+    const docs = [{ title: 'The leviathan is awake' }];
 
     const index = epstein(docs).getIndex();
 
     expect(index['the']).not.toBeDefined();
     expect(index['is']).not.toBeDefined();
+    expect(index['']).not.toBeDefined();
   });
 
   test('should tokenize a simple object', () => {

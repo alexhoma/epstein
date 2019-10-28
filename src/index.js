@@ -1,52 +1,37 @@
-const wordsToRemove = [
-  'a',
-  'as',
-  'at',
-  'an',
-  'by',
-  'be',
-  'for',
-  'of',
-  'or',
-  'to',
-  'the',
-  'that',
-  'than',
-  'is',
-  'it',
-  'its',
-];
+function filterEmptySpaces(value) {
+  return value.replace(/ +/g, ' ').trim();
+}
 
-function createIndex(documents) {
-  // return the same object but with its property values
-  // already sanitized and tokenized
-  const analyzedDocuments = documents.map(function analyze(doc) {
-    return Object.entries(doc).reduce(function(
-      accumulatedTokenizedDocument,
+function filterStopWords(value) {
+  const stopWords = ['is', 'the'].join('|');
+  return value.replace(new RegExp(stopWords, 'gi'), '');
+}
+
+function tokenize(value) {
+  return value.toLowerCase().split(' ');
+}
+
+function analyze(documents, analyzers) {
+  return documents.map(function mapDocuments(document) {
+    return Object.entries(document).reduce(function mapDocumentProperties(
+      tokenizedDocument,
       [key, value],
     ) {
-      value = value.replace(/ +/g, ' ').trim();
-      value = value.toLowerCase();
-
-      const tokenizedValue = value
-        .split(' ')
-        .filter(function removeCommonWords(value) {
-          return !wordsToRemove.includes(value) && value;
-        });
+      value = analyzers.reduce(function executeAnalyzers(property, analyzer) {
+        return analyzer(property);
+      }, value);
 
       return {
-        ...accumulatedTokenizedDocument,
-        [key]: tokenizedValue,
+        ...tokenizedDocument,
+        [key]: value,
       };
     },
     {});
   });
+}
 
-  return analyzedDocuments.reduce(function createInvertedIndex(
-    index,
-    doc,
-    documentId,
-  ) {
+function createInvertedIndex(documents) {
+  return documents.reduce(function invertDocuments(index, doc, documentId) {
     Object.entries(doc).forEach(function([, tokens]) {
       tokens.forEach(function(token, position) {
         if (!index[token] || !index[token][documentId]) {
@@ -57,7 +42,6 @@ function createIndex(documents) {
               [documentId]: [position],
             },
           };
-
           return;
         }
 
@@ -72,8 +56,17 @@ function createIndex(documents) {
     });
 
     return index;
-  },
-  {});
+  }, {});
+}
+
+function createIndex(documents) {
+  const analyzedDocuments = analyze(documents, [
+    filterStopWords,
+    filterEmptySpaces,
+    tokenize,
+  ]);
+
+  return createInvertedIndex(analyzedDocuments);
 }
 
 export default function epstein(documents) {
