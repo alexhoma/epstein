@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest",
     "size": "bundlesize",
-    "dist": "rollup --compact -c rollup.config.js"
+    "build": "rollup --compact -c rollup.config.js",
+    "dist": "npm t -- --coverage --verbose && npm run size && npm run build"
   },
   "keywords": [
     "search",
