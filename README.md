@@ -2,7 +2,7 @@
 
 In-memory search engine written in javascript.
 
-> The story tells that the **Epstein Drive** is a modified fusion drive invented by Solomon Epstein around 130 years BXT (Before Extrasolar Technology) and it enabled humanity to travel beyond Earth and colonize the Inner Planets, the Asteroid Belt and outer planets due to its efficiency and power. "The Expanse"
+> Tells the story that the **Epstein Drive** is a modified fusion drive invented by Solomon Epstein around 130 years BXT (Before Extrasolar Technology) and it enabled humanity to travel beyond Earth and colonize the Inner Planets, the Asteroid Belt and outer planets due to its efficiency and power. "The Expanse"
 
 ## Setup
 
@@ -10,7 +10,7 @@ In-memory search engine written in javascript.
 npm i epstein
 ```
 
-## Usage
+## Basic usage
 
 ```javascript
 import epstein from 'epstein';
@@ -23,11 +23,37 @@ const docs = [
 
 const index = epstein(documents);
 index.search('Cal');
-// [ { title: 'Calibans War', number: 2 } ]
+// [
+//   { title: 'Calibans War', number: 2 }
+// ]
 ```
 
-## Tests:
+## API reference
 
-```bash
-npm t
+### `epstein()`
+
+This is the main function of `epstein` library. It will process
+all the documents and return an index to execute ll your queries.
+
+```javascript
+const index = epstein(docs, {
+  /* opts (not finished yet) - by default everything will be searchable */
+  searchable: ['title', 'content'],
+  facetable: ['author', 'stars'],
+  exactMatch: ['isbn'],
+});
+```
+
+### `index.search()`
+
+This is the search function of epstein. It will allow you to
+search for any document in that index.
+
+```javascript
+const results = index.search('query string', {
+  /* opts with default values (not finished yet) */
+  filters: [],
+  highlight: false,
+  fuzzy: true,
+});
 ```
