@@ -1,15 +1,4 @@
-function filterEmptySpaces(value) {
-  return value.replace(/ +/g, ' ').trim();
-}
-
-function filterStopWords(value) {
-  const stopWords = ['is', 'the'].join('|');
-  return value.replace(new RegExp(stopWords, 'gi'), '');
-}
-
-function tokenize(value) {
-  return value.toLowerCase().split(' ');
-}
+import { filterEmptySpaces, filterStopWords, tokenize } from './analyzers';
 
 function analyze(documents, analyzers) {
   return documents.map(function mapDocuments(document) {
@@ -61,8 +50,8 @@ function createInvertedIndex(documents) {
 
 function createIndex(documents) {
   const analyzedDocuments = analyze(documents, [
-    filterStopWords,
     filterEmptySpaces,
+    filterStopWords,
     tokenize,
   ]);
 

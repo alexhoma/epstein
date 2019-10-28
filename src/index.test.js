@@ -1,42 +1,7 @@
 import epstein from '.';
 
-describe('indexing', () => {
-  test('should lowercase all tokens', () => {
-    const docs = [{ title: 'LeviAThaN AwakeS' }];
-
-    const index = epstein(docs).getIndex();
-
-    expect(index.leviathan).toBeDefined();
-    expect(index.awakes).toBeDefined();
-  });
-
-  test('should trim all tokens', () => {
-    const docs = [{ title: 'leviathan     ' }];
-
-    const index = epstein(docs).getIndex();
-
-    expect(index['']).not.toBeDefined();
-  });
-
-  test('should filter more than one empty space between tokens', () => {
-    const docs = [{ title: 'leviathan     awakes' }];
-
-    const index = epstein(docs).getIndex();
-
-    expect(index['']).not.toBeDefined();
-  });
-
-  test('should filter stopwords (case inensitive)', () => {
-    const docs = [{ title: 'The leviathan is awake' }];
-
-    const index = epstein(docs).getIndex();
-
-    expect(index['the']).not.toBeDefined();
-    expect(index['is']).not.toBeDefined();
-    expect(index['']).not.toBeDefined();
-  });
-
-  test('should tokenize a simple object', () => {
+describe('index', () => {
+  test('should have tokens from a simple object', () => {
     const docs = [{ title: 'Leviathan Awakes' }];
 
     const index = epstein(docs).getIndex();
@@ -47,7 +12,7 @@ describe('indexing', () => {
     });
   });
 
-  test('should tokenize simple object with repeated tokens', () => {
+  test('should have token locations from a repeated words', () => {
     const docs = [
       { title: 'Leviathan Awakes Leviathan Awakes Awakes Leviathan' },
     ];
@@ -60,7 +25,7 @@ describe('indexing', () => {
     });
   });
 
-  test('should tokenize many simple objects', () => {
+  test('should have tokens from many simple objects', () => {
     const docs = [{ title: 'Leviathan Awakes' }, { title: 'Calibans War' }];
 
     const index = epstein(docs).getIndex();
@@ -73,7 +38,7 @@ describe('indexing', () => {
     });
   });
 
-  test('should tokenize many simple objects with shared tokens', () => {
+  test('should have token locations from many simple objects with repeated words', () => {
     const docs = [{ title: 'Leviathan Awakes' }, { title: 'Awakes Leviathan' }];
 
     const index = epstein(docs).getIndex();
@@ -82,6 +47,17 @@ describe('indexing', () => {
       leviathan: { 0: [0], 1: [1] },
       awakes: { 0: [1], 1: [0] },
     });
+  });
+
+  test('should not have an empty token', () => {
+    const docs = [
+      { title: '   leviathan', author: 'james   ' },
+      { title: 'calibans   war', author: '   corey' },
+    ];
+
+    const index = epstein(docs).getIndex();
+
+    expect(index['']).not.toBeDefined();
   });
 
   test('acceptance', () => {
