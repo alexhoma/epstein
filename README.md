@@ -57,10 +57,10 @@ A list of documents that you'll want to search for. Limitations by now:
 
 A map of settings to configure the way your documents will be analyzed.
 
-| Attribute | Type                   | Description                                                                          |
-| --------- | ---------------------- | ------------------------------------------------------------------------------------ |
-| search    | `Array<string>`        | Attributes that will be searchable. When indexing, they'll be filtered and tokenized |
-| exact     | `Array<string|number>` | Attributes that will be exact matched, they won't be filtered or tokenized.          |
+| Attribute | Type                    | Description                                                                           |
+| --------- | ----------------------- | ------------------------------------------------------------------------------------- |
+| search    | `Array<string>`         | Attributes that will be searchable. When indexing, they'll be filtered and tokenized. |
+| exact     | `Array<string\|number>` | Attributes that will be exact matched, they won't be filtered or tokenized.           |
 
 ### `index.search()`
 
