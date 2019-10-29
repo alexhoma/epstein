@@ -76,6 +76,16 @@ describe('index', () => {
     expect(index['']).not.toBeDefined();
   });
 
+  test('should have only tokens that appear in the "search" field in settings', () => {
+    const docs = [{ title: 'Leviathan', author: 'James Corey' }];
+
+    const index = epstein(docs, { search: ['title'] }).getIndex();
+
+    expect(index).toEqual({
+      leviathan: { 0: [0] },
+    });
+  });
+
   test('acceptance', () => {
     const docs = [
       {

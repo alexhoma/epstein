@@ -19,6 +19,31 @@ function analyze(documents, analyzers) {
   });
 }
 
+function reduceDocuments(documents, settings) {
+  if (!settings.search) {
+    return documents;
+  }
+
+  return documents.map(function mapDocuments(document) {
+    const { search: searchableAttributes } = settings;
+
+    return Object.entries(document).reduce(function filterDocumentProperties(
+      filteredDocument,
+      [propKey, propValue],
+    ) {
+      if (!searchableAttributes.includes(propKey)) {
+        return filteredDocument;
+      }
+
+      return {
+        ...filteredDocument,
+        [propKey]: propValue,
+      };
+    },
+    {});
+  });
+}
+
 function createInvertedIndex(documents) {
   return documents.reduce(function invertDocuments(index, doc, documentId) {
     Object.entries(doc).forEach(function([, tokens]) {
@@ -48,8 +73,9 @@ function createInvertedIndex(documents) {
   }, {});
 }
 
-function createIndex(documents) {
-  const analyzedDocuments = analyze(documents, [
+function createIndex(documents, settings) {
+  const filteredDocuments = reduceDocuments(documents, settings);
+  const analyzedDocuments = analyze(filteredDocuments, [
     filterEmptySpaces,
     filterStopWords,
     tokenize,
@@ -58,8 +84,8 @@ function createIndex(documents) {
   return createInvertedIndex(analyzedDocuments);
 }
 
-export default function epstein(documents) {
-  const index = createIndex(documents);
+export default function epstein(documents, settings = {}) {
+  const index = createIndex(documents, settings);
 
   return {
     getIndex() {

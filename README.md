@@ -39,8 +39,7 @@ all the documents and return an index to execute ll your queries.
 const index = epstein(docs, {
   /* opts (not finished yet) - by default everything will be searchable */
   searchable: ['title', 'content'],
-  facetable: ['author', 'stars'],
-  exactMatch: ['isbn'],
+  exactSearch: ['isbn'],
 });
 ```
 

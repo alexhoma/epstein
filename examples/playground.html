@@ -37,9 +37,6 @@
     </main>
 
     <script type="text/javascript">
-      var books = books.map(function transformBooks(book) {
-        return {title: book.title, author: book.author, content: book.content};
-      });
       function renderPerformance(target, callback) {
         var start = window
           .performance
@@ -68,7 +65,9 @@
       }
 
       // Search with Epstein
-      var booksIndex = renderPerformance('index-time', () => epstein(books))
+      var booksIndex = renderPerformance('index-time', () => epstein(books, {
+        search: ['title', 'author', 'content']
+      }))
       document
         .querySelector('#search')
         .addEventListener('input', function onUserSearch(e) {
