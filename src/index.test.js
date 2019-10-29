@@ -66,7 +66,7 @@ describe('index', () => {
     expect(index['']).not.toBeDefined();
   });
 
-  test('should not have any stopword (case inensitive)', () => {
+  test('should not have any stopword token (case inensitive)', () => {
     const docs = [{ title: 'The leviathan is awake' }];
 
     const index = epstein(docs).getIndex();
@@ -76,10 +76,20 @@ describe('index', () => {
     expect(index['']).not.toBeDefined();
   });
 
-  test('should have only tokens that appear in the "search" field in settings', () => {
+  test('should have tokens that appear in the "search" field in settings', () => {
     const docs = [{ title: 'Leviathan', author: 'James Corey' }];
 
     const index = epstein(docs, { search: ['title'] }).getIndex();
+
+    expect(index).toEqual({
+      leviathan: { 0: [0] },
+    });
+  });
+
+  test('should have tokens that appear in the "exact" field in settings', () => {
+    const docs = [{ title: 'leviathan', author: 'James Corey' }];
+
+    const index = epstein(docs, { exact: ['title'] }).getIndex();
 
     expect(index).toEqual({
       leviathan: { 0: [0] },

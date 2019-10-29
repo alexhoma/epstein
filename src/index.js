@@ -20,12 +20,13 @@ function analyze(documents, analyzers) {
 }
 
 function reduceDocuments(documents, settings) {
-  if (!settings.search) {
+  if (!settings.search && !settings.exact) {
     return documents;
   }
 
   return documents.map(function mapDocuments(document) {
-    const { search: searchableAttributes } = settings;
+    const { search = [], exact = [] } = settings;
+    const searchableAttributes = [...search, ...exact];
 
     return Object.entries(document).reduce(function filterDocumentProperties(
       filteredDocument,
