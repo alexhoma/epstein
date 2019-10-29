@@ -1,11 +1,20 @@
 import { filterEmptySpaces, filterStopWords, tokenize } from './analyzers';
 
-function analyze(documents, analyzers) {
+function analyze(documents, settings, analyzers) {
+  const { exact: exactSearchAttributes } = settings;
+
   return documents.map(function mapDocuments(document) {
     return Object.entries(document).reduce(function mapDocumentProperties(
       tokenizedDocument,
       [key, value],
     ) {
+      if (exactSearchAttributes.includes(key)) {
+        return {
+          ...tokenizedDocument,
+          [key]: value.toLowerCase(),
+        };
+      }
+
       value = analyzers.reduce(function executeAnalyzers(property, analyzer) {
         return analyzer(property);
       }, value);
@@ -20,12 +29,12 @@ function analyze(documents, analyzers) {
 }
 
 function reduceDocuments(documents, settings) {
-  if (!settings.search && !settings.exact) {
+  if (!settings.search.length && !settings.exact.length) {
     return documents;
   }
 
   return documents.map(function mapDocuments(document) {
-    const { search = [], exact = [] } = settings;
+    const { search, exact } = settings;
     const searchableAttributes = [...search, ...exact];
 
     return Object.entries(document).reduce(function filterDocumentProperties(
@@ -48,6 +57,7 @@ function reduceDocuments(documents, settings) {
 function createInvertedIndex(documents) {
   return documents.reduce(function invertDocuments(index, doc, documentId) {
     Object.entries(doc).forEach(function([, tokens]) {
+      tokens = Array.isArray(tokens) ? tokens : [tokens];
       tokens.forEach(function(token, position) {
         if (!index[token] || !index[token][documentId]) {
           index = {
@@ -76,7 +86,7 @@ function createInvertedIndex(documents) {
 
 function createIndex(documents, settings) {
   const filteredDocuments = reduceDocuments(documents, settings);
-  const analyzedDocuments = analyze(filteredDocuments, [
+  const analyzedDocuments = analyze(filteredDocuments, settings, [
     filterEmptySpaces,
     filterStopWords,
     tokenize,
@@ -86,6 +96,7 @@ function createIndex(documents, settings) {
 }
 
 export default function epstein(documents, settings = {}) {
+  settings = { search: [], exact: [], ...settings };
   const index = createIndex(documents, settings);
 
   return {

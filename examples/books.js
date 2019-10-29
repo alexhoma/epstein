@@ -3,6 +3,7 @@ var books = [
     title: 'Auberon',
     author: 'James SA Corey',
     link: 'https://www.jamessacorey.com/books/auberon/',
+    isbn: 'IS-1234',
     img:
       'https://www.jamessacorey.com/wp-content/uploads/2019/10/Auberon-4rev21-800x1182.jpg',
     content:
@@ -12,6 +13,7 @@ var books = [
     title: 'Leviathan Wakes',
     author: 'James SA Corey',
     link: 'https://www.jamessacorey.com/books/leviathan-wakes/',
+    isbn: 'IS-1235',
     img:
       'https://www.jamessacorey.com/wp-content/uploads/2015/05/Leviathan-Updated-97803161346751.jpg',
     content:
@@ -21,6 +23,7 @@ var books = [
     title: 'Calibans War',
     author: 'James SA Corey',
     link: 'https://www.jamessacorey.com/books/calibans-war/',
+    isbn: 'IS-1236',
     img:
       'https://www.jamessacorey.com/wp-content/uploads/2015/05/CalibansWar_TPB_2019.jpg',
     content:
@@ -30,6 +33,7 @@ var books = [
     title: 'Abaddons Gate',
     author: 'James SA Corey',
     link: 'https://www.jamessacorey.com/books/abaddons-gate/',
+    isbn: 'IS-1237',
     img:
       'https://www.jamessacorey.com/wp-content/uploads/2015/05/AbaddonsGate_TPB_2019.jpg',
     content:
@@ -39,6 +43,7 @@ var books = [
     title: 'Cibola Burn',
     author: 'James SA Corey',
     link: 'https://www.jamessacorey.com/books/cibola-burn/',
+    isbn: 'IS-1238',
     img:
       'https://www.jamessacorey.com/wp-content/uploads/2015/05/Corey_CibolaBurn_TPB.jpg',
     content:
@@ -48,6 +53,7 @@ var books = [
     title: 'Nemesis Games',
     author: 'James SA Corey',
     link: 'https://www.jamessacorey.com/books/nemesis-games/',
+    isbn: 'IS-1239',
     img:
       'https://www.jamessacorey.com/wp-content/uploads/2015/05/Corey_NemesisGames_HC.jpg',
     content:
@@ -57,6 +63,7 @@ var books = [
     title: 'Babylons Ashes',
     author: 'James SA Corey',
     link: 'https://www.jamessacorey.com/books/babylons-ashes/',
+    isbn: 'IS-1240',
     img:
       'https://www.jamessacorey.com/wp-content/uploads/2016/12/BablyonsAshes.jpg',
     content:
@@ -66,6 +73,7 @@ var books = [
     title: 'The Butcher of Anderson Station',
     author: 'James SA Corey',
     link: 'https://www.jamessacorey.com/books/the-butcher-of-anderson-station/',
+    isbn: 'IS-1241',
     img:
       'https://www.jamessacorey.com/wp-content/uploads/2017/01/TheButcherofAndersonStation.jpg',
     content:
@@ -75,6 +83,7 @@ var books = [
     title: 'Gods of Risk',
     author: 'James SA Corey',
     link: 'https://www.jamessacorey.com/books/gods-of-risk/',
+    isbn: 'IS-1241',
     img:
       'https://www.jamessacorey.com/wp-content/uploads/2017/01/GodsofRisk.jpg',
     content:
@@ -84,6 +93,7 @@ var books = [
     title: 'The Churn',
     author: 'James SA Corey',
     link: 'https://www.jamessacorey.com/books/churn/',
+    isbn: 'IS-1243',
     img: 'https://www.jamessacorey.com/wp-content/uploads/2017/01/TheChurn.jpg',
     content:
       'Before his trip to the stars, before the Rocinante, Timmy was confined to a Baltimore where crime paid you or killed you. Unless the authorities got to you first. On a future Earth beset by overpopulation, pollution, and poverty, people do what they must to survive. The Churn follows a crime boss named Burton as his organization is threatened by a new private security force tasked with cleaning up the city. When the police start cracking down, Burton and his footsoldiers-loyal lieutenant Erich, former prostitute Lydia, and young enforcer Timmy-become increasingly desperate to find a way out.',
@@ -92,6 +102,7 @@ var books = [
     title: 'The Vital Abyss',
     author: 'James SA Corey',
     link: 'https://www.jamessacorey.com/books/vital-abyss/',
+    isbn: 'IS-1244',
     img:
       'https://www.jamessacorey.com/wp-content/uploads/2017/01/VitalAbyss.jpg',
     content:
@@ -101,6 +112,7 @@ var books = [
     title: 'Strange Dogs',
     author: 'James SA Corey',
     link: 'https://www.jamessacorey.com/books/strange-dogs/',
+    isbn: 'IS-1245',
     img:
       'https://www.jamessacorey.com/wp-content/uploads/2017/06/StrangeDogsCover.jpg',
     content:
@@ -110,6 +122,7 @@ var books = [
     title: 'Persepolis Rising',
     author: 'James SA Corey',
     link: 'https://www.jamessacorey.com/books/persepolis-rising/',
+    isbn: 'IS-1246',
     img:
       'https://www.jamessacorey.com/wp-content/uploads/2017/11/PersepolisRising_TPB_2019.jpg',
     content:
@@ -119,6 +132,7 @@ var books = [
     title: 'Tiamats Wrath',
     author: 'James SA Corey',
     link: 'https://www.jamessacorey.com/books/tiamats-wrath/',
+    isbn: 'IS-1247',
     img:
       'https://www.jamessacorey.com/wp-content/uploads/2018/04/TiamatsWrath_HC_2019.jpg',
     content:

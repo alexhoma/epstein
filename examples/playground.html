@@ -5,6 +5,7 @@
     <script type="text/javascript" src="./books.js"></script>
     <script type="text/javascript" src="../dist/epstein.umd.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.4.5/fuse.min.js"></script>
+    <script type="text/javascript" src="./rawSearch.js"></script>
 
     <link rel="stylesheet" href="./styles.css"/>
   </head>
@@ -66,25 +67,29 @@
 
       // Search with Epstein
       var booksIndex = renderPerformance('index-time', () => epstein(books, {
-        search: ['title', 'author', 'content']
+        search: [
+          'title', 'author', 'content'
+        ],
+        exact: ['isbn']
       }))
       document
         .querySelector('#search')
         .addEventListener('input', function onUserSearch(e) {
           var results = renderPerformance('epstein-performance-time', () => booksIndex.search(e.target.value))
-
           renderResults('epstein-results', results);
         })
 
       // Search with Fuse.js
       var fuse = new Fuse(books, {
-        keys: ['title', 'author', 'content']
+        keys: [
+          'title', 'author', 'content'
+        ],
+        id: 'isbn'
       });
       document
         .querySelector('#search')
         .addEventListener('input', function onUserSearch(e) {
           var results = renderPerformance('fuse-performance-time', () => fuse.search(e.target.value))
-
           renderResults('fuse-results', results);
         })
 
@@ -93,26 +98,7 @@
         .querySelector('#search')
         .addEventListener('input', function onUserSearch(e) {
           var results = renderPerformance('raw-performance-time', () => {
-            var queryParam = e
-              .target
-              .value
-              .toLowerCase();
-
-            return books.filter(function (book) {
-              var found = Object
-                .entries(book)
-                .some(([, prop]) => {
-                  return prop
-                    .toLowerCase()
-                    .search(queryParam) !== -1
-                });
-
-              if (!found) {
-                return;
-              }
-
-              return book;
-            });
+            return rawSearch(e.target.value, books);
           });
 
           renderResults('raw-results', results);

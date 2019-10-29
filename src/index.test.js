@@ -1,98 +1,125 @@
 import epstein from '.';
 
 describe('index', () => {
-  test('should have tokens from a simple object', () => {
-    const docs = [{ title: 'Leviathan Awakes' }];
+  describe('with defaults', () => {
+    test('should have one single token from a simple object', () => {
+      const docs = [{ title: 'Leviathan' }];
 
-    const index = epstein(docs).getIndex();
+      const index = epstein(docs).getIndex();
 
-    expect(index).toEqual({
-      leviathan: { 0: [0] },
-      awakes: { 0: [1] },
+      expect(index).toEqual({
+        leviathan: { 0: [0] },
+      });
+    });
+
+    test('should have many tokens from a simple object', () => {
+      const docs = [{ title: 'Leviathan Awakes' }];
+
+      const index = epstein(docs).getIndex();
+
+      expect(index).toEqual({
+        leviathan: { 0: [0] },
+        awakes: { 0: [1] },
+      });
+    });
+
+    test('should have token locations from a repeated words', () => {
+      const docs = [
+        { title: 'Leviathan Awakes Leviathan Awakes Awakes Leviathan' },
+      ];
+
+      const index = epstein(docs).getIndex();
+
+      expect(index).toEqual({
+        leviathan: { 0: [0, 2, 5] },
+        awakes: { 0: [1, 3, 4] },
+      });
+    });
+
+    test('should have tokens from many simple objects', () => {
+      const docs = [{ title: 'Leviathan Awakes' }, { title: 'Calibans War' }];
+
+      const index = epstein(docs).getIndex();
+
+      expect(index).toEqual({
+        leviathan: { 0: [0] },
+        awakes: { 0: [1] },
+        calibans: { 1: [0] },
+        war: { 1: [1] },
+      });
+    });
+
+    test('should have token locations from many simple objects with repeated words', () => {
+      const docs = [
+        { title: 'Leviathan Awakes' },
+        { title: 'Awakes Leviathan' },
+      ];
+
+      const index = epstein(docs).getIndex();
+
+      expect(index).toEqual({
+        leviathan: { 0: [0], 1: [1] },
+        awakes: { 0: [1], 1: [0] },
+      });
+    });
+
+    test('should have all tokens in lowercase', () => {
+      const docs = [{ title: 'LeviAThaN AwakeS' }];
+
+      const index = epstein(docs).getIndex();
+
+      expect(index.leviathan).toBeDefined();
+      expect(index.awakes).toBeDefined();
+    });
+
+    test('should not have an empty token', () => {
+      const docs = [{ title: '   leviathan  awakes  ' }];
+
+      const index = epstein(docs).getIndex();
+
+      expect(index['']).not.toBeDefined();
+    });
+
+    test('should not have any stopword token (case inensitive)', () => {
+      const docs = [{ title: 'The leviathan is awake' }];
+
+      const index = epstein(docs).getIndex();
+
+      expect(index['the']).not.toBeDefined();
+      expect(index['is']).not.toBeDefined();
+      expect(index['']).not.toBeDefined();
     });
   });
 
-  test('should have token locations from a repeated words', () => {
-    const docs = [
-      { title: 'Leviathan Awakes Leviathan Awakes Awakes Leviathan' },
-    ];
+  describe('with settings', () => {
+    test('should have tokens that appear in the "search" field in settings', () => {
+      const docs = [{ title: 'Leviathan', author: 'James Corey' }];
 
-    const index = epstein(docs).getIndex();
+      const index = epstein(docs, { search: ['title'] }).getIndex();
 
-    expect(index).toEqual({
-      leviathan: { 0: [0, 2, 5] },
-      awakes: { 0: [1, 3, 4] },
+      expect(index).toEqual({
+        leviathan: { 0: [0] },
+      });
     });
-  });
 
-  test('should have tokens from many simple objects', () => {
-    const docs = [{ title: 'Leviathan Awakes' }, { title: 'Calibans War' }];
+    test('should have tokens that appear in the "exact" field in settings', () => {
+      const docs = [{ title: 'leviathan', author: 'James Corey' }];
 
-    const index = epstein(docs).getIndex();
+      const index = epstein(docs, { exact: ['title'] }).getIndex();
 
-    expect(index).toEqual({
-      leviathan: { 0: [0] },
-      awakes: { 0: [1] },
-      calibans: { 1: [0] },
-      war: { 1: [1] },
+      expect(index).toEqual({
+        leviathan: { 0: [0] },
+      });
     });
-  });
 
-  test('should have token locations from many simple objects with repeated words', () => {
-    const docs = [{ title: 'Leviathan Awakes' }, { title: 'Awakes Leviathan' }];
+    test('should have "exact" tokens indexed without filter and token analyzing (only lowercased)', () => {
+      const docs = [{ title: 'Leviathan Awakes', isbn: 'IS-97#25' }];
 
-    const index = epstein(docs).getIndex();
+      const index = epstein(docs, { exact: ['isbn'] }).getIndex();
 
-    expect(index).toEqual({
-      leviathan: { 0: [0], 1: [1] },
-      awakes: { 0: [1], 1: [0] },
-    });
-  });
-
-  test('should have all tokens in lowercase', () => {
-    const docs = [{ title: 'LeviAThaN AwakeS' }];
-
-    const index = epstein(docs).getIndex();
-
-    expect(index.leviathan).toBeDefined();
-    expect(index.awakes).toBeDefined();
-  });
-
-  test('should not have an empty token', () => {
-    const docs = [{ title: '   leviathan  awakes  ' }];
-
-    const index = epstein(docs).getIndex();
-
-    expect(index['']).not.toBeDefined();
-  });
-
-  test('should not have any stopword token (case inensitive)', () => {
-    const docs = [{ title: 'The leviathan is awake' }];
-
-    const index = epstein(docs).getIndex();
-
-    expect(index['the']).not.toBeDefined();
-    expect(index['is']).not.toBeDefined();
-    expect(index['']).not.toBeDefined();
-  });
-
-  test('should have tokens that appear in the "search" field in settings', () => {
-    const docs = [{ title: 'Leviathan', author: 'James Corey' }];
-
-    const index = epstein(docs, { search: ['title'] }).getIndex();
-
-    expect(index).toEqual({
-      leviathan: { 0: [0] },
-    });
-  });
-
-  test('should have tokens that appear in the "exact" field in settings', () => {
-    const docs = [{ title: 'leviathan', author: 'James Corey' }];
-
-    const index = epstein(docs, { exact: ['title'] }).getIndex();
-
-    expect(index).toEqual({
-      leviathan: { 0: [0] },
+      expect(index).toEqual({
+        'is-97#25': { 0: [0] },
+      });
     });
   });
 
