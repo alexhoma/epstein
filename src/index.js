@@ -1,4 +1,9 @@
-import { filterEmptySpaces, filterStopWords, tokenize } from './analyzers';
+import {
+  filterEmptySpaces,
+  filterSpecialChars,
+  filterStopWords,
+  tokenize,
+} from './analyzers';
 
 function analyze(documents, settings, analyzers) {
   const { exact: exactSearchAttributes } = settings;
@@ -88,6 +93,7 @@ function createIndex(documents, settings) {
   const filteredDocuments = reduceDocuments(documents, settings);
   const analyzedDocuments = analyze(filteredDocuments, settings, [
     filterEmptySpaces,
+    filterSpecialChars,
     filterStopWords,
     tokenize,
   ]);

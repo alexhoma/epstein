@@ -81,10 +81,7 @@
 
       // Search with Fuse.js
       var fuse = new Fuse(books, {
-        keys: [
-          'title', 'author', 'content'
-        ],
-        id: 'isbn'
+        keys: ['title', 'author', 'content']
       });
       document
         .querySelector('#search')

@@ -2,6 +2,11 @@ export function filterEmptySpaces(value) {
   return value.replace(/ +/g, ' ').trim();
 }
 
+export function filterSpecialChars(value) {
+  const sanitized = value.replace(/(?!\w|\s)./g, '');
+  return filterEmptySpaces(sanitized);
+}
+
 export function filterStopWords(value) {
   const stopWords = [
     'a',

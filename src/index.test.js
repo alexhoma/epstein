@@ -80,6 +80,14 @@ describe('index', () => {
       expect(index['']).not.toBeDefined();
     });
 
+    test('should not have a special character token', () => {
+      const docs = [{ title: 'leviathan awakes.' }];
+
+      const index = epstein(docs).getIndex();
+
+      expect(index['awakes.']).not.toBeDefined();
+    });
+
     test('should not have any stopword token (case inensitive)', () => {
       const docs = [{ title: 'The leviathan is awake' }];
 

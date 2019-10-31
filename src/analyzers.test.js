@@ -1,4 +1,9 @@
-import { filterEmptySpaces, filterStopWords, tokenize } from './analyzers';
+import {
+  filterEmptySpaces,
+  filterStopWords,
+  tokenize,
+  filterSpecialChars,
+} from './analyzers';
 
 describe('filterEmptySpaces', () => {
   test('should trim the value', () => {
@@ -11,6 +16,14 @@ describe('filterEmptySpaces', () => {
     const value = 'leviathan     awakes';
 
     expect(filterEmptySpaces(value)).toEqual('leviathan awakes');
+  });
+});
+
+describe('filterSpecialChars', () => {
+  test('should filter all the special characters except words, numbers and underscores', () => {
+    const value = 'leviathan!@#$%^*()-+{}[_awakes ]<>,./"=|? book';
+
+    expect(filterSpecialChars(value)).toEqual('leviathan_awakes book');
   });
 });
 
