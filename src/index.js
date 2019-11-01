@@ -62,7 +62,7 @@ function reduceDocuments(documents, settings) {
 
 function createInvertedIndex(documents) {
   return documents.reduce(function invertDocuments(index, doc, documentId) {
-    Object.entries(doc).forEach(function([, tokens]) {
+    Object.entries(doc).forEach(function([documentProperty, tokens]) {
       tokens = Array.isArray(tokens) ? tokens : [tokens];
       tokens.forEach(function(token, position) {
         if (!index[token] || !index[token][documentId]) {
@@ -70,7 +70,23 @@ function createInvertedIndex(documents) {
             ...index,
             [token]: {
               ...index[token],
-              [documentId]: [position],
+              [documentId]: {
+                [documentProperty]: [position],
+              },
+            },
+          };
+          return;
+        }
+
+        if (!index[token][documentId][documentProperty]) {
+          index = {
+            ...index,
+            [token]: {
+              ...index[token],
+              [documentId]: {
+                ...index[token][documentId],
+                [documentProperty]: [position],
+              },
             },
           };
           return;
@@ -80,7 +96,13 @@ function createInvertedIndex(documents) {
           ...index,
           [token]: {
             ...index[token],
-            [documentId]: [...index[token][documentId], position],
+            [documentId]: {
+              ...index[token][documentId],
+              [documentProperty]: [
+                ...index[token][documentId][documentProperty],
+                position,
+              ],
+            },
           },
         };
       });
@@ -123,6 +145,7 @@ export default function epstein(documents, settings = {}) {
 
       const documentIds = terms.reduce(function findDocumentIds(acc, term) {
         const matches = index[term] && Object.keys(index[term]);
+
         if (!matches) {
           return acc;
         }

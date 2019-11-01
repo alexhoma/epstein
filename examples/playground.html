@@ -68,7 +68,7 @@
       // Search with Epstein
       var booksIndex = renderPerformance('index-time', () => epstein(books, {
         search: [
-          'product', 'author', 'content'
+          'title', 'author', 'content'
         ],
         exact: ['isbn']
       }))

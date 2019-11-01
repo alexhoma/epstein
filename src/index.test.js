@@ -8,7 +8,7 @@ describe('index', () => {
       const index = epstein(docs).getIndex();
 
       expect(index).toEqual({
-        leviathan: { 0: [0] },
+        leviathan: { 0: { title: [0] } },
       });
     });
 
@@ -18,8 +18,8 @@ describe('index', () => {
       const index = epstein(docs).getIndex();
 
       expect(index).toEqual({
-        leviathan: { 0: [0] },
-        awakes: { 0: [1] },
+        leviathan: { 0: { title: [0] } },
+        awakes: { 0: { title: [1] } },
       });
     });
 
@@ -31,8 +31,8 @@ describe('index', () => {
       const index = epstein(docs).getIndex();
 
       expect(index).toEqual({
-        leviathan: { 0: [0, 2, 5] },
-        awakes: { 0: [1, 3, 4] },
+        leviathan: { 0: { title: [0, 2, 5] } },
+        awakes: { 0: { title: [1, 3, 4] } },
       });
     });
 
@@ -42,10 +42,10 @@ describe('index', () => {
       const index = epstein(docs).getIndex();
 
       expect(index).toEqual({
-        leviathan: { 0: [0] },
-        awakes: { 0: [1] },
-        calibans: { 1: [0] },
-        war: { 1: [1] },
+        leviathan: { 0: { title: [0] } },
+        awakes: { 0: { title: [1] } },
+        calibans: { 1: { title: [0] } },
+        war: { 1: { title: [1] } },
       });
     });
 
@@ -58,11 +58,56 @@ describe('index', () => {
       const index = epstein(docs).getIndex();
 
       expect(index).toEqual({
-        leviathan: { 0: [0], 1: [1] },
-        awakes: { 0: [1], 1: [0] },
+        leviathan: { 0: { title: [0] }, 1: { title: [1] } },
+        awakes: { 0: { title: [1] }, 1: { title: [0] } },
       });
     });
 
+    test('should have repeated words in different document props', () => {
+      const docs = [{ title: 'Leviathan James', author: 'James' }];
+
+      const index = epstein(docs).getIndex();
+
+      expect(index).toEqual({
+        leviathan: { 0: { title: [0] } },
+        james: { 0: { title: [1], author: [0] } },
+      });
+    });
+  });
+
+  describe('with settings', () => {
+    test('should have tokens that appear in the "search" field in settings', () => {
+      const docs = [{ title: 'Leviathan', author: 'James Corey' }];
+
+      const index = epstein(docs, { search: ['title'] }).getIndex();
+
+      expect(index).toEqual({
+        leviathan: { 0: { title: [0] } },
+      });
+    });
+
+    test('should have tokens that appear in the "exact" field in settings', () => {
+      const docs = [{ title: 'leviathan', author: 'James Corey' }];
+
+      const index = epstein(docs, { exact: ['title'] }).getIndex();
+
+      expect(index).toEqual({
+        leviathan: { 0: { title: [0] } },
+      });
+    });
+
+    test('should have "exact" tokens indexed without filter and token analyzing (only lowercased)', () => {
+      const docs = [{ title: 'Leviathan Awakes', isbn: 'IS-97#25' }];
+
+      const index = epstein(docs, { exact: ['isbn'] }).getIndex();
+
+      expect(index).toEqual({
+        'is-97#25': { 0: { isbn: [0] } },
+      });
+    });
+  });
+
+  describe('filtering and tokenization', () => {
     test('should have all tokens in lowercase', () => {
       const docs = [{ title: 'LeviAThaN AwakeS' }];
 
@@ -99,42 +144,10 @@ describe('index', () => {
     });
   });
 
-  describe('with settings', () => {
-    test('should have tokens that appear in the "search" field in settings', () => {
-      const docs = [{ title: 'Leviathan', author: 'James Corey' }];
-
-      const index = epstein(docs, { search: ['title'] }).getIndex();
-
-      expect(index).toEqual({
-        leviathan: { 0: [0] },
-      });
-    });
-
-    test('should have tokens that appear in the "exact" field in settings', () => {
-      const docs = [{ title: 'leviathan', author: 'James Corey' }];
-
-      const index = epstein(docs, { exact: ['title'] }).getIndex();
-
-      expect(index).toEqual({
-        leviathan: { 0: [0] },
-      });
-    });
-
-    test('should have "exact" tokens indexed without filter and token analyzing (only lowercased)', () => {
-      const docs = [{ title: 'Leviathan Awakes', isbn: 'IS-97#25' }];
-
-      const index = epstein(docs, { exact: ['isbn'] }).getIndex();
-
-      expect(index).toEqual({
-        'is-97#25': { 0: [0] },
-      });
-    });
-  });
-
   test('acceptance', () => {
     const docs = [
       {
-        title: 'Leviathan Awakes',
+        title: 'Leviathan James Awakes',
         author: 'James Corey',
       },
       {
@@ -154,14 +167,24 @@ describe('index', () => {
     const index = epstein(docs).getIndex();
 
     expect(index).toEqual({
-      leviathan: { 0: [0], 3: [0] },
-      awakes: { 0: [1] },
-      calibans: { 1: [0] },
-      war: { 1: [1], 3: [1, 2] },
-      abaddons: { 2: [0] },
-      gate: { 2: [1] },
-      james: { 0: [0], 1: [0], 2: [0], 3: [1, 2] },
-      corey: { 0: [1], 1: [1], 2: [1], 3: [0] },
+      leviathan: { 0: { title: [0] }, 3: { title: [0] } },
+      awakes: { 0: { title: [2] } },
+      calibans: { 1: { title: [0] } },
+      war: { 1: { title: [1] }, 3: { title: [1, 2] } },
+      abaddons: { 2: { title: [0] } },
+      gate: { 2: { title: [1] } },
+      james: {
+        0: { title: [1], author: [0] },
+        1: { author: [0] },
+        2: { author: [0] },
+        3: { author: [1, 2] },
+      },
+      corey: {
+        0: { author: [1] },
+        1: { author: [1] },
+        2: { author: [1] },
+        3: { author: [0] },
+      },
     });
   });
 });
