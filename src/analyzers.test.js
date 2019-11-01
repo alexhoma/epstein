@@ -29,9 +29,10 @@ describe('filterSpecialChars', () => {
 
 describe('filterStopWords', () => {
   test('should filter stopwords (case inensitive)', () => {
+    const stopwords = ['the', 'is'];
     const value = 'The leviathan is awake';
 
-    expect(filterStopWords(value)).toEqual('leviathan awake');
+    expect(filterStopWords(stopwords)(value)).toEqual('leviathan awake');
   });
 });
 

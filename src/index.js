@@ -1,3 +1,4 @@
+import stopWords from './stopwords';
 import {
   filterEmptySpaces,
   filterSpecialChars,
@@ -94,7 +95,7 @@ function createIndex(documents, settings) {
   const analyzedDocuments = analyze(filteredDocuments, settings, [
     filterEmptySpaces,
     filterSpecialChars,
-    filterStopWords,
+    filterStopWords(stopWords),
     tokenize,
   ]);
 
