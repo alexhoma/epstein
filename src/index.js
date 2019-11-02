@@ -137,25 +137,61 @@ export default function epstein(documents, settings = {}) {
         return documents;
       }
 
-      function analyze(string, analyzers) {
-        return analyzers.reduce((value, analyzer) => analyzer(value), string);
-      }
+      const terms = [filterEmptySpaces, tokenize].reduce(
+        function analyzeQueryString(value, analyzer) {
+          return analyzer(value);
+        },
+        query,
+      );
 
-      const terms = analyze(query, [filterEmptySpaces, tokenize]);
+      // find document matches by each term
+      const foundDocumentsByTerm = terms
+        .map(function mapTerms(term) {
+          const documentIdMatches = index[term] && Object.keys(index[term]);
+          if (!documentIdMatches) {
+            return;
+          }
 
-      const documentIds = terms.reduce(function findDocumentIds(acc, term) {
-        const matches = index[term] && Object.keys(index[term]);
+          return documentIdMatches.reduce(function accumulateTermMatches(
+            accDocs,
+            docId,
+          ) {
+            return [
+              ...accDocs,
+              {
+                id: docId,
+                terms: [term],
+              },
+            ];
+          },
+          []);
+        })
+        .filter(function removeUndefinedMatches(match) {
+          return !!match;
+        });
 
-        if (!matches) {
-          return acc;
-        }
+      // reduce document matches
+      const flattenFoundDocs = [].concat.apply([], foundDocumentsByTerm);
+      const documentCandidates = flattenFoundDocs.reduce(
+        function reduceTermMatchesByDocumentId(acc, doc) {
+          if (!acc[doc.id]) {
+            return { ...acc, [doc.id]: doc };
+          }
 
-        const documentIds = matches.filter(match => !acc.includes(match));
+          return {
+            ...acc,
+            [doc.id]: {
+              ...acc[doc.id],
+              terms: [...acc[doc.id].terms, ...doc.terms],
+            },
+          };
+        },
+        {},
+      );
 
-        return acc.concat(documentIds);
-      }, []);
-
-      return documentIds.map(documentId => documents[documentId]);
+      return Object.values(documentCandidates).map(
+        document => documents[document.id],
+      );
     },
   };
 }

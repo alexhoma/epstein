@@ -190,27 +190,20 @@ describe('index', () => {
 });
 
 describe('search', () => {
-  const docs = [
-    {
-      title: 'Leviathan Awakes',
-      author: 'James Corey',
-    },
-    {
-      title: 'Calibans War',
-      author: 'James Corey',
-    },
-    {
-      title: 'Abaddons Gate',
-      author: 'James Corey',
-    },
-    {
-      title: 'Leviathan War War',
-      author: 'Corey James James',
-    },
-  ];
-  const index = epstein(docs);
+  function ignoreOrder(array) {
+    return new Set(array);
+  }
 
   test('should return a all documents when search argument is a falsy value', () => {
+    const docs = [
+      { title: 'Leviathan Awakes', author: 'James Corey' },
+      { title: 'Calibans War', author: 'James Corey' },
+      { title: 'Abaddons Gate', author: 'James Corey' },
+      { title: 'Leviathan War War', author: 'Corey James James' },
+    ];
+
+    const index = epstein(docs);
+
     expect(index.search()).toEqual(docs);
     expect(index.search(0)).toEqual(docs);
     expect(index.search('')).toEqual(docs);
@@ -260,11 +253,14 @@ describe('search', () => {
     ];
 
     const index = epstein(docs);
+    const result = index.search('war');
 
-    expect(index.search('war')).toEqual([
-      { title: 'Calibans War', author: 'James Corey' },
-      { title: 'Leviathan War', author: 'Corey James' },
-    ]);
+    expect(ignoreOrder(result)).toEqual(
+      ignoreOrder([
+        { title: 'Calibans War', author: 'James Corey' },
+        { title: 'Leviathan War', author: 'Corey James' },
+      ]),
+    );
   });
 
   test('should return a list of many matching results when searching by many exact words', () => {
@@ -275,11 +271,14 @@ describe('search', () => {
     ];
 
     const index = epstein(docs);
+    const result = index.search('gate awakes');
 
-    expect(index.search('gate awakes')).toEqual([
-      { title: 'Abaddons Gate', author: 'James Corey' },
-      { title: 'Leviathan Awakes', author: 'James Corey' },
-    ]);
+    expect(ignoreOrder(result)).toEqual(
+      ignoreOrder([
+        { title: 'Abaddons Gate', author: 'James Corey' },
+        { title: 'Leviathan Awakes', author: 'James Corey' },
+      ]),
+    );
   });
 
   test('should return the same list of results even when there are many matchings of the same word', () => {
@@ -291,12 +290,15 @@ describe('search', () => {
     ];
 
     const index = epstein(docs);
+    const result = index.search('leviathan war');
 
-    expect(index.search('leviathan war')).toEqual([
-      { title: 'Leviathan Awakes', author: 'James Corey' },
-      { title: 'Leviathan War War', author: 'Corey James James' },
-      { title: 'Calibans War', author: 'James Corey' },
-    ]);
+    expect(ignoreOrder(result)).toEqual(
+      ignoreOrder([
+        { title: 'Leviathan Awakes', author: 'James Corey' },
+        { title: 'Leviathan War War', author: 'Corey James James' },
+        { title: 'Calibans War', author: 'James Corey' },
+      ]),
+    );
   });
 
   test('should return an empty list when there isnt any match', () => {
@@ -305,6 +307,23 @@ describe('search', () => {
     const index = epstein(docs);
 
     expect(index.search('beratna')).toEqual([]);
+  });
+
+  describe.skip('ranking', () => {
+    test('should rank higher matches that appear in priority document props', () => {
+      const docs = [
+        { title: 'Leviathan awakes', author: 'James' },
+        { title: 'Calibans War', author: 'Leviathan' },
+      ];
+
+      const index = epstein(docs);
+      const results = index.search('leviathan');
+
+      expect(results).toEqual([
+        { title: 'Leviathan awakes', author: 'James' },
+        { title: 'Calibans War', author: 'Leviathan' },
+      ]);
+    });
   });
 
   test.skip('acceptance', () => {
