@@ -60,17 +60,15 @@
 
         results.map(function renderResults(result) {
           var div = document.createElement("DIV");
-          div.innerHTML = `${result.title} - ${result.author}`;
+          div.innerHTML = `${result.id} - ${result.product}`;
           resultsContainer.appendChild(div);
         });
       }
 
       // Search with Epstein
       var booksIndex = renderPerformance('index-time', () => epstein(books, {
-        search: [
-          'title', 'author', 'content'
-        ],
-        exact: ['isbn']
+        search: ['product'],
+        //exact: ['id']
       }))
       document
         .querySelector('#search')
@@ -81,7 +79,8 @@
 
       // Search with Fuse.js
       var fuse = new Fuse(books, {
-        keys: ['title', 'author', 'content']
+        keys: ['product'],
+        // id: 'id'
       });
       document
         .querySelector('#search')

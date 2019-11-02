@@ -17,7 +17,7 @@ function analyze(documents, settings, analyzers) {
       if (exactSearchAttributes.includes(key)) {
         return {
           ...tokenizedDocument,
-          [key]: value.toLowerCase(),
+          [key]: String(value).toLowerCase(),
         };
       }
 

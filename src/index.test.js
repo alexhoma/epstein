@@ -105,6 +105,16 @@ describe('index', () => {
         'is-97#25': { 0: { isbn: [0] } },
       });
     });
+
+    test('should have "exact" tokens indexed without lowercase when value is only an integer', () => {
+      const docs = [{ title: 'Leviathan Awakes', isbn: 12345 }];
+
+      const index = epstein(docs, { exact: ['isbn'] }).getIndex();
+
+      expect(index).toEqual({
+        12345: { 0: { isbn: [0] } },
+      });
+    });
   });
 
   describe('filtering and tokenization', () => {
