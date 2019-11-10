@@ -319,23 +319,6 @@ describe('search', () => {
     expect(index.search('beratna')).toEqual([]);
   });
 
-  describe.skip('ranking', () => {
-    test('should rank higher matches that appear in priority document props', () => {
-      const docs = [
-        { title: 'Leviathan awakes', author: 'James' },
-        { title: 'Calibans War', author: 'Leviathan' },
-      ];
-
-      const index = epstein(docs);
-      const results = index.search('leviathan');
-
-      expect(results).toEqual([
-        { title: 'Leviathan awakes', author: 'James' },
-        { title: 'Calibans War', author: 'Leviathan' },
-      ]);
-    });
-  });
-
   test.skip('acceptance', () => {
     const docs = [
       { title: 'Leviathan Awakes', author: 'James Corey' },

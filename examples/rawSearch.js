@@ -3,7 +3,11 @@ function rawSearch(value, books) {
 
   return books.filter(function(book) {
     var found = Object.entries(book).some(([, prop]) => {
-      return prop.toLowerCase().search(queryParam) !== -1;
+      return (
+        String(prop)
+          .toLowerCase()
+          .search(queryParam) !== -1
+      );
     });
 
     if (!found) {

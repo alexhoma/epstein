@@ -132,7 +132,7 @@ export default function epstein(documents, settings = {}) {
     getIndex() {
       return index;
     },
-    search(query) {
+    search(query, searchSettings) {
       if (!query) {
         return documents;
       }
@@ -144,33 +144,91 @@ export default function epstein(documents, settings = {}) {
         query,
       );
 
+      function distance(a, b) {
+        if (a.length == 0) return b.length;
+        if (b.length == 0) return a.length;
+
+        var matrix = [];
+
+        // increment along the first column of each row
+        var i;
+        for (i = 0; i <= b.length; i++) {
+          matrix[i] = [i];
+        }
+
+        // increment each column in the first row
+        var j;
+        for (j = 0; j <= a.length; j++) {
+          matrix[0][j] = j;
+        }
+
+        // Fill in the rest of the matrix
+        for (i = 1; i <= b.length; i++) {
+          for (j = 1; j <= a.length; j++) {
+            if (b.charAt(i - 1) == a.charAt(j - 1)) {
+              matrix[i][j] = matrix[i - 1][j - 1];
+            } else {
+              matrix[i][j] = Math.min(
+                matrix[i - 1][j - 1] + 1, // substitution
+                Math.min(
+                  matrix[i][j - 1] + 1, // insertion
+                  matrix[i - 1][j] + 1,
+                ),
+              ); // deletion
+            }
+          }
+        }
+
+        return matrix[b.length][a.length];
+      }
+
       // find document matches by each term
       const foundDocumentsByTerm = terms
         .map(function mapTerms(term) {
-          const documentIdMatches = index[term] && Object.keys(index[term]);
-          if (!documentIdMatches) {
+          // const documentIdMatches = index[term] && Object.entries(index[term]);
+          const matches = Object.keys(index).filter(
+            item => distance(term, item) < 2,
+          );
+
+          if (matches.length === 0) {
             return;
           }
 
-          return documentIdMatches.reduce(function accumulateTermMatches(
-            accDocs,
-            docId,
-          ) {
-            return [
-              ...accDocs,
-              {
-                id: docId,
-                terms: [term],
-              },
-            ];
-          },
-          []);
+          const documentIdMatches = matches.reduce((acc, match) => {
+            return acc.concat(Object.entries(index[match]));
+          }, []);
+
+          return documentIdMatches.reduce(
+            function aggregateMatchedTermsByDocument(
+              accDocs,
+              [docId, docValue],
+            ) {
+              return [
+                ...accDocs,
+                {
+                  // documentId
+                  id: docId,
+                  // matching terms in document
+                  terms: Object.entries(docValue).map(
+                    function mapObjectAttributes([attribute, locations]) {
+                      return {
+                        term,
+                        attribute,
+                        position: locations,
+                      };
+                    },
+                  ),
+                },
+              ];
+            },
+            [],
+          );
         })
         .filter(function removeUndefinedMatches(match) {
           return !!match;
         });
 
-      // reduce document matches
+      // reduce matched documents by its terms
       const flattenFoundDocs = [].concat.apply([], foundDocumentsByTerm);
       const documentCandidates = flattenFoundDocs.reduce(
         function reduceTermMatchesByDocumentId(acc, doc) {
