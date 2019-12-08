@@ -4,6 +4,7 @@ import {
   filterSpecialChars,
   filterStopWords,
   tokenize,
+  tokenizeByNGram,
 } from './analyzers';
 
 function analyze(documents, settings, analyzers) {
@@ -118,7 +119,7 @@ function createIndex(documents, settings) {
     filterEmptySpaces,
     filterSpecialChars,
     filterStopWords(stopWords),
-    tokenize,
+    tokenizeByNGram,
   ]);
 
   return createInvertedIndex(analyzedDocuments);
@@ -147,10 +148,21 @@ export default function epstein(documents, settings = {}) {
       // find document matches by each term
       const foundDocumentsByTerm = terms
         .map(function mapTerms(term) {
-          const documentIdMatches = index[term] && Object.keys(index[term]);
-          if (!documentIdMatches) {
+          const matches = Object.keys(index).filter(item => {
+            const matchables = item.split(',');
+            if (!matchables.includes(item)) {
+              return null;
+            }
+            return item;
+          });
+
+          if (matches.length === 0) {
             return;
           }
+
+          const documentIdMatches = matches.reduce((acc, match) => {
+            return acc.concat(Object.entries(index[match.split(',').pop()]));
+          }, []);
 
           return documentIdMatches.reduce(function accumulateTermMatches(
             accDocs,
