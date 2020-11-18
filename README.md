@@ -2,7 +2,9 @@
 
 In-memory search engine written in javascript.
 
-> Tells the story that the **Epstein Drive** is a modified fusion drive invented by Solomon Epstein around 130 years BXT (Before Extrasolar Technology) and it enabled humanity to travel beyond Earth and colonize the Inner Planets, the Asteroid Belt and outer planets due to its efficiency and power. "The Expanse"
+> Tells the story that the **Epstein Drive** is a modified fusion drive invented by Solomon Epstein around 130 years BXT (Before Extrasolar Technology) and it enabled humanity to travel beyond Earth and colonize the Inner Planets, the Asteroid Belt and outer planets due to its efficiency and power. *"The Expanse"*
+
+![Epstein drive one animation](./epstein-drive.gif)
 
 ## :wave: Newcomer
 
